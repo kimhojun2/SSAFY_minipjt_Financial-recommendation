@@ -68,8 +68,14 @@ const selectitem = function () {
 onMounted(async () => {
   store.currentUser
   console.log('list : ', list)
+  if (route.params.id.includes('\n')) {
+    // route.params.id = route.params.id.replace(/\n/g, '%0A')
+    // route.params.id = route.params.id.replace(/\s/g, '%20')
+    //   console.log(33333333, route.params.id)
+    }
   try {
     const res = await axios.get(`${store.API_URL}/fin/deposit-product/${route.params.id}/`);
+    console.log(1111111111, route.params.id)
     deposit.value = res.data;
     console.log(res)
     if (store.currentUser) {
@@ -78,6 +84,7 @@ onMounted(async () => {
     }}
     isLoading.value = false;
   } catch (err) {
+    console.log(2222222222, route.params.id)
     console.log(err);
   }
 });

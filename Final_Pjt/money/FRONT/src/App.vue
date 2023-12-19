@@ -26,9 +26,9 @@
     </nav>
   </header>
   <div v-if="router.currentRoute.value.name != 'MainPageView'">
-    <footer class="footer">
+    <!-- <footer class="footer">
       <p>&copy; 2023 My Awesome App <small>SSAFY 10th KIM & LIM</small></p>
-    </footer>
+    </footer> -->
   </div>
   <RouterView />
 </template>

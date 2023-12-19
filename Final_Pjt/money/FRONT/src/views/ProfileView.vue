@@ -1,4 +1,22 @@
 <template>
+  <div class="modal_box1" v-if="openModal == true" @click="close($event)">
+    <div class="modal_box2">
+      <h1>상세정보</h1>
+      <h3>상품이름 : {{ recopro_name }}</h3>
+      <h3>은행이름 : {{ recopro_detail.kor_co_nm }}</h3>
+      <h3>이율정보 :
+        <div v-for="rate in recopro_detail.options">
+          {{ rate.save_trm }}개월
+          {{ rate.intr_rate_type_nm }} {{ rate.intr_rate }}%
+
+          
+        </div>
+      </h3>
+      
+      <h3>가입방법 : {{ recopro_detail.join_way }}</h3>
+      <button class="close">닫기</button>
+    </div>
+  </div>
   <div class="profile-container">
     
     <div v-if="isLoading" class="loading">Loading...</div>
@@ -51,12 +69,15 @@
         </div>
       
 
-
       <div class="recommended-products">
       <h1>추천상품</h1>
-        <div v-for="recopro in recommendlist">
-          {{ recopro }}
-
+        <div v-for="recopro in recommendlist" :key="recopro">
+          <div v-if="recopro.includes('예금')">
+            <button @click="open_deposit(recopro)">{{ recopro }}</button>
+          </div>
+          <div v-else>
+            <button @click="open_saving(recopro)">{{ recopro }}</button>
+          </div>
         </div>
       </div>
     </div>
@@ -86,8 +107,43 @@ const isLoading = ref(true)
 const findlist = ref([])
 const recommendlist = ref([])
 const level = ref('FAMILY')
+const openModal = ref(false)
+const recopro_name = ref('')
+const recopro_detail = ref([])
+
+const open_deposit = (recopro) => {
+  openModal.value = true
+  recopro_name.value = recopro
+  console.log(11111, recopro)
+  axios({
+    method: 'get',
+    url: `${store.API_URL}/fin/deposit-product/${recopro}/`
+  }) .then((res) => {
+    recopro_detail.value = res.data
+  }) .catch((err) =>{
+    console.log(err)
+  })
+}
+
+const open_saving = (recopro) => {
+  openModal.value = true
+  recopro_name.value = recopro
+  console.log(11111, recopro)
+  axios({
+    method: 'get',
+    url: `${store.API_URL}/fin/saving-product/${recopro}/`
+  }) .then((res) => {
+    recopro_detail.value = res.data
+  }) .catch((err) =>{
+    console.log(err)
+  })
+}
 
 
+const close = (event) => {
+  openModal.value = false
+  recopro_detail.value = []
+}
 
 
 const toggleEditMode = () => {
@@ -161,7 +217,7 @@ onMounted(() => {
     .then((res) => {
       findlist.value = res.data.recommended_products
       findlist.value.forEach((rec) => {
-        // console.log(rec)
+        console.log(rec)
         
         const findDep = store.deps.find((dep) => {
           return rec === dep.fin_prdt_cd
@@ -175,7 +231,7 @@ onMounted(() => {
 
       })
       findlist.value.forEach((rec) => {
-        // console.log(rec)
+        console.log(rec)
         const findDep = store.fins.find((dep) => {
           return rec === dep.fin_prdt_cd
         })
@@ -245,7 +301,31 @@ const temp = computed(() => {
   font-family: 'Noto Sans KR', sans-serif; /* Google Fonts에서 가져온 글꼴 */
 }
 
+.modal_box1 {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  position: fixed;
+}
 
+.modal_box2 {
+  width: 40%;
+  text-align: center;
+  margin: 80px auto;
+  background: white;
+  border-radius: 5px;
+  padding: 20px 0;
+}
+
+.close {
+  cursor: pointer;
+  border: none;
+  background: blue;
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
+  padding: 5px 15px;
+}
 </style>
 
 

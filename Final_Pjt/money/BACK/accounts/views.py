@@ -66,8 +66,10 @@ def recommend(request, username):
     main_data = User.objects.values('money', 'salary', 'travel','married')
 
     df_existing = pd.DataFrame(existing_data)
+    print(1111111111111111111111111111111111111111111111111111111111111111)
     print(df_existing)
     df_main = pd.DataFrame(main_data)
+    print(2222222222222222222222222222222222222222222222222222)
     print(df_main)
     df_main['travel'] = df_main['travel'].fillna(0)
     df_existing['financial_products'] = df_existing['financial_products'].fillna('')
